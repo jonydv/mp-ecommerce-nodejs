@@ -27,6 +27,8 @@ const payWithMP = function (req, res, next) {
       pending: 'https://jonydv-mp-commerce-nodejs.herokuapp.com',
     },
     auto_return: 'approved',
+    notification_url:
+      'https://jonydv-mp-commerce-nodejs.herokuapp.com/detail/mercadopago/webhook',
   };
 
   mercadopago.preferences
