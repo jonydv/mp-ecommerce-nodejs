@@ -21,9 +21,10 @@ const payWithMP = function (req, res, next) {
       },
     ],
     back_urls: {
-      success: 'http://localhost:3000/detail/mercadopago',
-      failure: 'http://localhost:3000',
-      pending: 'http://localhost:3000',
+      success:
+        'https://jonydv-mp-commerce-nodejs.herokuapp.com/detail/mercadopago', //'http://localhost:3000/detail/mercadopago',
+      failure: 'https://jonydv-mp-commerce-nodejs.herokuapp.com',
+      pending: 'https://jonydv-mp-commerce-nodejs.herokuapp.com',
     },
     auto_return: 'approved',
   };
