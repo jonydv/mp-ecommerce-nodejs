@@ -2,67 +2,111 @@ const mercadopago = require('mercadopago');
 const dotenv = require('dotenv').config();
 
 mercadopago.configure({
-  access_token: process.env.MP_ACCESS_TOKEN_V || MP_ACCESS_TOKEN_V,
+  access_token: process.env.MP_ACCESS_TOKEN,
+  integrator_id: process.env.MP_INTEGRATOR_ID,
 });
 
 const payWithMP = function (req, res, next) {
   const payer = {
-    name: 'TT017189',
-    email: 'test_user_96757941@testuser.com',
+    name: 'Lalo',
+    surname: 'Landa',
+    email: 'test_user_81131286@testuser.com',
+    phone: {
+      area_code: '52',
+      number: 5549737300,
+    },
+    address: {
+      street_name: 'Insurgentes Sur',
+      street_number: 1602,
+      zip_code: '03940',
+    },
   };
-
+  const img_url = req.body.img.split('.')[1];
+  //console.log(img_url);
   let preference = {
     payer,
     items: [
       {
+        id: '1234',
         title: req.body.title,
+        picture_url: `https://jonydv-mp-commerce-nodejs.herokuapp.com${img_url}`,
+        description: 'Dispositivo móvil de Tienda e-commerce',
         unit_price: Number(req.body.price),
         quantity: Number(req.body.unit),
       },
     ],
     back_urls: {
+      /* success: 'http://localhost:3000/detail/mercadopago/success',
+      failure: 'http://localhost:3000/detail/mercadopago/failure',
+      pending: 'http://localhost:3000/detail/mercadopago/pending',*/
       success:
-        'https://jonydv-mp-commerce-nodejs.herokuapp.com/detail/mercadopago', //'http://localhost:3000/detail/mercadopago',
-      failure: 'https://jonydv-mp-commerce-nodejs.herokuapp.com',
-      pending: 'https://jonydv-mp-commerce-nodejs.herokuapp.com',
+        'https://jonydv-mp-commerce-nodejs.herokuapp.com/detail/mercadopago/success',
+      failure:
+        'https://jonydv-mp-commerce-nodejs.herokuapp.com/detail/mercadopago/failure',
+      pending:
+        'https://jonydv-mp-commerce-nodejs.herokuapp.com/detail/mercadopago/pending',
     },
     auto_return: 'approved',
+    payment_methods: {
+      excluded_payment_methods: [
+        {
+          id: 'amex',
+        },
+      ],
+      excluded_payment_types: [
+        {
+          id: 'atm',
+        },
+      ],
+      installments: 6,
+    },
     notification_url:
       'https://jonydv-mp-commerce-nodejs.herokuapp.com/detail/mercadopago/webhook',
+    external_reference: 'jonatandavidvillalba@gmail.com',
   };
 
   mercadopago.preferences
     .create(preference)
     .then((response) => {
-      global.id = response.body.id;
+      //console.log(response);
       res.render('detail', {
         img: req.body.img,
         title: req.body.title,
         price: req.body.price,
         unit: req.body.unit,
-        global_id: global.id,
+        initPoint: response.body.init_point,
       });
     })
     .catch((error) => {
-      console.log(error);
+      res.render('failure');
     });
 };
 
 const getMpPaymentStatus = function (req, res, next) {
+  //console.log(req.query);
   if ((req.query.type = 'payment_id')) {
     const paymentInfo = {
       payment_id: req.query.payment_id,
       status: req.query.status,
+      external_reference: req.query.external_reference,
       merchant_order_id: req.query.merchant_order_id,
+      payment_type: req.query.payment_type,
     };
-
+    if (paymentInfo.payment_status === 'failure') {
+    }
     mercadopago.payment
       .findById(paymentInfo.payment_id)
       .then((response) => {
-        res.render('success', response.body);
+        if (response.body.status === 'approved') {
+          res.render('success', response.body);
+        } else if (response.body.status === 'pending') {
+          res.render('pending');
+        } else if (response.body.status === 'failure') {
+          res.render('failure');
+        }
       })
       .catch((error) => {
-        console.log(error);
+        res.render('failure');
       });
   } else {
     return res.status(400).json('an error ocurred');
@@ -72,8 +116,7 @@ const getMpPaymentStatus = function (req, res, next) {
 const mpWebhook = function (req, res) {
   console.log(req.body);
 
-  res.send('ok');
-  res.status(200);
+  res.status(200).json('ok');
 };
 
 module.exports = { payWithMP, getMpPaymentStatus, mpWebhook };
