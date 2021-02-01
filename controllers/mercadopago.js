@@ -5,7 +5,9 @@ mercadopago.configure({
   access_token: process.env.MP_ACCESS_TOKEN,
   integrator_id: process.env.MP_INTEGRATOR_ID,
 });
-
+console.log('--------------------------------------------');
+console.log('access token: ' + process.env.MP_ACCESS_TOKEN);
+console.log('--------------------------------------------');
 const payWithMP = function (req, res, next) {
   const payer = {
     name: 'Lalo',
@@ -22,7 +24,6 @@ const payWithMP = function (req, res, next) {
     },
   };
   const img_url = req.body.img.split('.')[1];
-  //console.log(img_url);
   let preference = {
     payer,
     items: [
@@ -36,9 +37,6 @@ const payWithMP = function (req, res, next) {
       },
     ],
     back_urls: {
-      /* success: 'http://localhost:3000/detail/mercadopago/success',
-      failure: 'http://localhost:3000/detail/mercadopago/failure',
-      pending: 'http://localhost:3000/detail/mercadopago/pending',*/
       success:
         'https://jonydv-mp-commerce-nodejs.herokuapp.com/detail/mercadopago/success',
       failure:
@@ -46,7 +44,6 @@ const payWithMP = function (req, res, next) {
       pending:
         'https://jonydv-mp-commerce-nodejs.herokuapp.com/detail/mercadopago/pending',
     },
-    auto_return: 'approved',
     payment_methods: {
       excluded_payment_methods: [
         {
@@ -61,14 +58,16 @@ const payWithMP = function (req, res, next) {
       installments: 6,
     },
     notification_url:
-      'https://jonydv-mp-commerce-nodejs.herokuapp.com/detail/mercadopago/webhook',
+      'https://jonydv-mp-commerce-nodejs.herokuapp.com/detail/mercadopago/webhook?source_news=webhooks',
     external_reference: 'jonatandavidvillalba@gmail.com',
   };
 
   mercadopago.preferences
     .create(preference)
     .then((response) => {
-      //console.log(response);
+      console.log('--------------------------------------------');
+      console.log('PREFERENCIA DE PAGO', +response);
+      console.log('--------------------------------------------');
       res.render('detail', {
         img: req.body.img,
         title: req.body.title,
@@ -83,7 +82,6 @@ const payWithMP = function (req, res, next) {
 };
 
 const getMpPaymentStatus = function (req, res, next) {
-  //console.log(req.query);
   if ((req.query.type = 'payment_id')) {
     const paymentInfo = {
       payment_id: req.query.payment_id,
@@ -97,8 +95,11 @@ const getMpPaymentStatus = function (req, res, next) {
     mercadopago.payment
       .findById(paymentInfo.payment_id)
       .then((response) => {
+        console.log('--------------------------------------------');
+        console.log('PAGO CREADO', +response);
+        console.log('--------------------------------------------');
         if (response.body.status === 'approved') {
-          res.render('success', response.body);
+          res.render('success', response.body, paymentInfo.payment_id);
         } else if (response.body.status === 'pending') {
           res.render('pending');
         } else if (response.body.status === 'failure') {
@@ -116,7 +117,7 @@ const getMpPaymentStatus = function (req, res, next) {
 const mpWebhook = function (req, res) {
   console.log(req.body);
 
-  res.status(200).json('ok');
+  res.status(200);
 };
 
 module.exports = { payWithMP, getMpPaymentStatus, mpWebhook };
