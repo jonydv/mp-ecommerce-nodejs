@@ -10,6 +10,10 @@ console.log('access token: ');
 console.log(process.env.MP_ACCESS_TOKEN);
 console.log('--------------------------------------------');
 const payWithMP = function (req, res, next) {
+  console.log('--------------------------------------------');
+  console.log('access token: ');
+  console.log(process.env.MP_ACCESS_TOKEN);
+  console.log('--------------------------------------------');
   const payer = {
     name: 'Lalo',
     surname: 'Landa',
