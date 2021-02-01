@@ -67,7 +67,8 @@ const payWithMP = function (req, res, next) {
     .create(preference)
     .then((response) => {
       console.log('--------------------------------------------');
-      console.log('PREFERENCIA DE PAGO', +response);
+      console.log('PREFERENCIA DE PAGO');
+      console.log(response);
       console.log('--------------------------------------------');
       res.render('detail', {
         img: req.body.img,
@@ -97,7 +98,8 @@ const getMpPaymentStatus = function (req, res, next) {
       .findById(paymentInfo.payment_id)
       .then((response) => {
         console.log('--------------------------------------------');
-        console.log('PAGO CREADO', +response);
+        console.log('PAGO CREADO');
+        console.log(response);
         console.log('--------------------------------------------');
         if (response.body.status === 'approved') {
           res.render('success', response.body);
