@@ -29,6 +29,7 @@ const payWithMP = function (req, res, next) {
     },
   };
   const img_url = req.body.img.split('.')[1];
+
   let preference = {
     payer,
     items: [
@@ -37,8 +38,9 @@ const payWithMP = function (req, res, next) {
         title: req.body.title,
         picture_url: `https://jonydv-mp-commerce-nodejs.herokuapp.com${img_url}`,
         description: 'Dispositivo móvil de Tienda e-commerce',
-        unit_price: Number(req.body.price),
         quantity: Number(req.body.unit),
+        currency_id: 'MXN',
+        unit_price: parseFloat(req.body.price),
       },
     ],
     back_urls: {
