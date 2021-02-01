@@ -6,7 +6,8 @@ mercadopago.configure({
   integrator_id: process.env.MP_INTEGRATOR_ID,
 });
 console.log('--------------------------------------------');
-console.log('access token: ' + process.env.MP_ACCESS_TOKEN);
+console.log('access token: ');
+console.log(process.env.MP_ACCESS_TOKEN);
 console.log('--------------------------------------------');
 const payWithMP = function (req, res, next) {
   const payer = {
