@@ -60,6 +60,7 @@ const payWithMP = function (req, res, next) {
     notification_url:
       'https://jonydv-mp-commerce-nodejs.herokuapp.com/detail/mercadopago/webhook?source_news=webhooks',
     external_reference: 'jonatandavidvillalba@gmail.com',
+    auto_return: 'approved',
   };
 
   mercadopago.preferences
@@ -99,7 +100,7 @@ const getMpPaymentStatus = function (req, res, next) {
         console.log('PAGO CREADO', +response);
         console.log('--------------------------------------------');
         if (response.body.status === 'approved') {
-          res.render('success', response.body, paymentInfo.payment_id);
+          res.render('success', response.body);
         } else if (response.body.status === 'pending') {
           res.render('pending');
         } else if (response.body.status === 'failure') {
