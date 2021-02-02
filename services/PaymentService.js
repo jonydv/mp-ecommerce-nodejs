@@ -25,7 +25,7 @@ class PaymentService {
         category_id: "1234",
         quantity: 1,
         currency_id: "MXN",
-        unit_price: Number.parseFloat(price).toFixed(2)
+        unit_price: parseFloat(price).toFixed(2)
       }
     ];
 
