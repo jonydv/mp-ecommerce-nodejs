@@ -25,6 +25,7 @@ class PaymentController {
     }
   
     async webhook(req, res) {
+      console.log(req.body);
       if (req.method === "POST") {
         let body = "";
         req.on("data", chunk => {
@@ -35,7 +36,8 @@ class PaymentController {
           res.end("ok");
         });
       }
-      return res.status(201);
+      
+      return res.status(201).json('ok');
     }
   }
   
