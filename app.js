@@ -1,6 +1,6 @@
 var express = require('express');
 var exphbs = require('express-handlebars');
-
+const mercadopago = require('mercadopago');
 const PaymentController = require("./controllers/PaymentController");
 const PaymentService = require("./services/PaymentService");
 const PaymentInstance = new PaymentController(new PaymentService());
@@ -13,6 +13,10 @@ var app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+mercadopago.configure({
+  access_token: process.env.MP_ACCESS_TOKEN,
+  integrator_id: process.env.MP_INTEGRATOR_ID,
+});
 
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
@@ -32,7 +36,22 @@ app.get("/detail", (req, res) => {
 });
 
 app.get("/detail/mercadopago/success", (req, res) => {
-  res.render("success", req.query);
+  let paymentInfo;
+  mercadopago.payment
+  .findById(req.query.payment_id)
+  .then((response) => {
+    paymentInfo = {
+      external_reference: req.query.external_reference,
+      preference_id: req.query.preference_id,
+      payment_id: req.query.payment_id,
+      payment_method_id: response.body.payment_method_id
+    }
+    res.render('success', paymentInfo);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+  
 });
 
 app.get("/detail/mercadopago/failure", (req, res) => {

@@ -23,7 +23,7 @@ class PaymentService {
         description: "Dispositivo movil de Tienda e-commerce",
         picture_url: `https://jonydv-mp-commerce-nodejs.herokuapp.com${img_url}.jpg`,
         category_id: "1234",
-        quantity: parseInt(unit),
+        quantity: 1,
         currency_id: "MXN",
         unit_price: parseFloat(price)
       }

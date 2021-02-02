@@ -26,18 +26,8 @@ class PaymentController {
   
     async webhook(req, res) {
       console.log(req.body);
-      if (req.method === "POST") {
-        let body = "";
-        req.on("data", chunk => {
-          body += chunk.toString();
-        });
-        req.on("end", () => {
-          console.log(body, "webhook response");
-          res.end("ok");
-        });
-      }
-      
-      return res.status(201).json('ok');
+            
+      return res.status(200).json('ok');
     }
   }
   
