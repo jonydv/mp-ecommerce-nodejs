@@ -20,7 +20,7 @@ class PaymentService {
         id: "1234",
         title: name,
         description: "Dispositivo movil de Tienda e-commerce",
-        picture_url: `https://jonydv-mp-commerce-nodejs.herokuapp.com${img_url}`,
+        picture_url: `https://jonydv-mp-commerce-nodejs.herokuapp.com${img_url}.jpg`,
         category_id: "1234",
         quantity: parseInt(unit),
         currency_id: "ARS",
