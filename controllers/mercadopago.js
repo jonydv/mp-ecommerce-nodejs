@@ -5,15 +5,8 @@ mercadopago.configure({
   access_token: process.env.MP_ACCESS_TOKEN,
   integrator_id: process.env.MP_INTEGRATOR_ID,
 });
-console.log('--------------------------------------------');
-console.log('access token: ');
-console.log(process.env.MP_ACCESS_TOKEN);
-console.log('--------------------------------------------');
+
 const payWithMP = function (req, res, next) {
-  console.log('--------------------------------------------');
-  console.log('access token: ');
-  console.log(process.env.MP_ACCESS_TOKEN);
-  console.log('--------------------------------------------');
   const payer = {
     name: 'Lalo',
     surname: 'Landa',
@@ -73,10 +66,6 @@ const payWithMP = function (req, res, next) {
   mercadopago.preferences
     .create(preference)
     .then((response) => {
-      console.log('--------------------------------------------');
-      console.log('PREFERENCIA DE PAGO');
-      console.log(response);
-      console.log('--------------------------------------------');
       res.render('detail', {
         img: req.body.img,
         title: req.body.title,
@@ -104,10 +93,6 @@ const getMpPaymentStatus = function (req, res, next) {
     mercadopago.payment
       .findById(paymentInfo.payment_id)
       .then((response) => {
-        console.log('--------------------------------------------');
-        console.log('PAGO CREADO');
-        console.log(response);
-        console.log('--------------------------------------------');
         if (response.body.status === 'approved') {
           res.render('success', response.body);
         } else if (response.body.status === 'pending') {
