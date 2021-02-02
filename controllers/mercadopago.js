@@ -1,10 +1,5 @@
 const mercadopago = require('mercadopago');
-const dotenv = require('dotenv').config();
-
-mercadopago.configure({
-  access_token: process.env.MP_ACCESS_TOKEN,
-  integrator_id: process.env.MP_INTEGRATOR_ID,
-});
+require('dotenv').config();
 
 const payWithMP = function (req, res, next) {
   const payer = {
