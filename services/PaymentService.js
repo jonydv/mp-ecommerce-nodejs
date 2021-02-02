@@ -13,7 +13,8 @@ class PaymentService {
   }
 
   async createPaymentMercadoPago(name, price, unit, img) {
-    const url = `${this.mercadoPagoUrl}/preferences?access_token=${this.tokensMercadoPago.test.access_token}`;
+    const url = `${this.mercadoPagoUrl}/preferences`;
+    //const url = `${this.mercadoPagoUrl}/preferences?access_token=${this.tokensMercadoPago.test.access_token}`;
     const img_url = img.split('.')[1];
     const items = [
       {
@@ -69,6 +70,7 @@ class PaymentService {
       const request = await axios.post(url, preferences, {
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${this.tokensMercadoPago.test.access_token}`,
           "x-integrator-id": "dev_24c65fb163bf11ea96500242ac130004"
         }
       });
