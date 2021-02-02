@@ -1,40 +1,57 @@
 var express = require('express');
-const dotenv = require('dotenv');
 var exphbs = require('express-handlebars');
-const mercadopago = require('mercadopago');
-const router = require('./routes/mercadopago');
+
+const PaymentController = require("./controllers/PaymentController");
+const PaymentService = require("./services/PaymentService");
+const PaymentInstance = new PaymentController(new PaymentService());
+
 
 var port = process.env.PORT || 3000;
 
-dotenv.config();
 
 var app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-mercadopago.configure({
-  access_token: process.env.MP_ACCESS_TOKEN,
-  integrator_id: process.env.MP_INTEGRATOR_ID,
-});
 
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
+
+
+app.get('/', function (req, res, next) {
+  res.render('home');
+});
+
+
+app.get("/", (req, res) => {
+  res.render("home");
+});
+
+app.get("/detail", (req, res) => {
+  res.render("detail", req.query);
+});
+
+app.get("/detail/mercadopago/success", (req, res) => {
+  res.render("success", req.query);
+});
+
+app.get("/detail/mercadopago/failure", (req, res) => {
+  res.render("failure");
+});
+
+app.get("/detail/mercadopago/pending", (req, res) => {
+  res.render("pending");
+});
+
+app.post("/payment/new", (req, res) =>
+  PaymentInstance.getMercadoPagoLink(req, res)
+);
+
+app.post("/detail/mercadopago/webhook", (req, res) => PaymentInstance.webhook(req, res));
 
 app.use(express.static('assets'));
 
 
 app.use('/assets', express.static(__dirname + '/assets'));
 
-app.use('/', router);
-
-app.get('/', function (req, res, next) {
-  res.render('home');
-});
-/*app.post('/detail', payWithMP);
-/*app.get('/detail', function (req, res) {
-  res.render('detail', req.query);
-});*/
-/**/
-
-/*app.get('/pay/mercadopago', getMpPaymentStatus);*/
 app.listen(port);
