@@ -112,7 +112,7 @@ const getMpPaymentStatus = function (req, res, next) {
 const mpWebhook = function (req, res) {
   console.log(req.body);
 
-  return res.status(200);
+  res.status(200).json('ok');
 };
 
 module.exports = { payWithMP, getMpPaymentStatus, mpWebhook };
